@@ -36,7 +36,7 @@ class Database:
         execute("CREATE INDEX IF NOT EXISTS index_music_v2_url ON music_v2(url)")
 
     def __enter__(self):
-        pass
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
