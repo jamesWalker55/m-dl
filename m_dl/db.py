@@ -25,7 +25,7 @@ class Database:
                 title TEXT NOT NULL,
                 artist TEXT NOT NULL,
                 url TEXT NOT NULL,
-                added_at TEXT NOT NULL,
+                added_at DATETIME NOT NULL,
                 processed INTEGER NOT NULL DEFAULT 0
             )
             """
