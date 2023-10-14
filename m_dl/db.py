@@ -63,7 +63,7 @@ class Database:
         result = (
             self.con.cursor()
             .execute(
-                "SELECT id FROM music_v2 WHERE url = ?",
+                "SELECT rowid FROM music_v2 WHERE url = ?",
                 (url,),
             )
             .fetchone()
