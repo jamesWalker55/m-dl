@@ -107,7 +107,7 @@ def download_and_get_path(url: str, folder_path):
                 f"There should be exactly 1 file after downloading, but found {len(files)} files"
             )
 
-        temp_path = Path(files[0])
+        temp_path = Path(tempdir) / files[0]
         output_path = Path(folder_path) / temp_path.name
 
         # if output path already exists, then this is a duplicate
