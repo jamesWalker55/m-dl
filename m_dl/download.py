@@ -1,3 +1,6 @@
+import os
+import time
+import tempfile
 from typing import TypedDict
 from yt_dlp import YoutubeDL
 from pathlib import Path
@@ -87,3 +90,33 @@ def download(url: str, folder_path):
 
     with YoutubeDL(options) as ydl:
         ydl.download(url)
+
+
+def download_and_get_path(url: str, folder_path):
+    with tempfile.TemporaryDirectory(dir=folder_path) as tempdir:
+        download(url, tempdir)
+
+        # sleep a bit to wait for disk IO to settle
+        if len(os.listdir(tempdir)) != 1:
+            time.sleep(1)
+
+        # there should only be 1 file in this folder
+        files = os.listdir(tempdir)
+        if len(files) != 1:
+            raise FileNotFoundError(
+                f"There should be exactly 1 file after downloading, but found {len(files)} files"
+            )
+
+        temp_path = Path(files[0])
+        output_path = Path(folder_path) / temp_path.name
+
+        # if output path already exists, then this is a duplicate
+        # only move the file if it doesn't exist yet
+        if output_path.exists():
+            log.warn(
+                "Output path %s already exists, discarding downloaded file", output_path
+            )
+        else:
+            temp_path.rename(output_path)
+
+    return output_path
