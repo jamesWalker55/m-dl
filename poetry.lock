@@ -595,6 +595,35 @@ files = [
 traitlets = "*"
 
 [[package]]
+name = "mediafile"
+version = "0.12.0"
+description = "Handles low-level interfacing for files' tags. Wraps Mutagen to"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "mediafile-0.12.0-py3-none-any.whl", hash = "sha256:6b6fdb61bb151cd9d6a8a8821ce28adee604ede8a9a992f0d9dd3e835ef4899b"},
+    {file = "mediafile-0.12.0.tar.gz", hash = "sha256:d75d805a06ed56150dbcea76505e700f9809abd9e98f98117ae46f5df2ccf1d7"},
+]
+
+[package.dependencies]
+mutagen = ">=1.46"
+six = ">=1.9"
+
+[package.extras]
+test = ["tox"]
+
+[[package]]
+name = "mutagen"
+version = "1.47.0"
+description = "read and write audio tags for many formats"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "mutagen-1.47.0-py3-none-any.whl", hash = "sha256:edd96f50c5907a9539d8e5bba7245f62c9f520aef333d13392a79a4f70aca719"},
+    {file = "mutagen-1.47.0.tar.gz", hash = "sha256:719fadef0a978c31b4cf3c956261b3c58b6948b32023078a2117b1de09f0fc99"},
+]
+
+[[package]]
 name = "mypy-extensions"
 version = "1.0.0"
 description = "Type system extensions for programs checked with the mypy type checker."
@@ -1189,4 +1218,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "ddccaa529e2ec4a3fe2c42c5cc91d84fadca61a65cfe0cafb77856f38ece491e"
+content-hash = "2a64210a46f959030ced529923bde72da82af5912cd9ac2947432e476cd621f0"
