@@ -14,27 +14,35 @@ class PlaylistItem:
     channel_id: str
 
     added_at: datetime
+    uploaded_at: datetime
 
     @classmethod
     def from_pyyoutube(cls, item: pyyoutube.PlaylistItem):
         title = item.snippet.title  # type: ignore
-        video_id = item.snippet.resourceId.videoId  # type: ignore
-        channel = item.snippet.videoOwnerChannelTitle  # type: ignore
-        channel_id = item.snippet.videoOwnerChannelId  # type: ignore
-        added_at = item.snippet.publishedAt  # type: ignore
+        assert isinstance(title, str)
 
-        # parse added_at to a datetime
+        video_id = item.snippet.resourceId.videoId  # type: ignore
+        assert isinstance(video_id, str)
+
+        channel = item.snippet.videoOwnerChannelTitle  # type: ignore
+        assert isinstance(channel, str)
+
+        channel_id = item.snippet.videoOwnerChannelId  # type: ignore
+        assert isinstance(channel_id, str)
+
+        added_at = item.snippet.publishedAt  # type: ignore
         assert isinstance(added_at, str)
         assert len(added_at) == 20
         assert added_at[-1] == "Z"
         added_at = datetime.fromisoformat(added_at[:-1])
 
-        assert isinstance(title, str)
-        assert isinstance(video_id, str)
-        assert isinstance(channel, str)
-        assert isinstance(channel_id, str)
+        uploaded_at = item.contentDetails.videoPublishedAt  # type: ignore
+        assert isinstance(uploaded_at, str)
+        assert len(uploaded_at) == 20
+        assert uploaded_at[-1] == "Z"
+        uploaded_at = datetime.fromisoformat(uploaded_at[:-1])
 
-        return cls(title, video_id, channel, channel_id, added_at)
+        return cls(title, video_id, channel, channel_id, added_at, uploaded_at)
 
 
 class YTApi:
