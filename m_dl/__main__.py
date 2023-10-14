@@ -1,11 +1,12 @@
-from .log import setup_logging
+from .log import setup_logging, log
 
 setup_logging()
 
-from datetime import datetime
 from .config import config
 from .db import Database
 from .ytapi import YTApi, PlaylistItem
+from .download import download_and_get_path
+from .tagger import tag_file
 
 
 def new_liked_videos(db: Database):
@@ -39,16 +40,34 @@ def new_liked_videos(db: Database):
 def main():
     path = R"D:\Soundtracks\Downloaded Playlist\database.sqlite"
     with Database(path) as db:
-        # print(db.add_url('the url', title='the title', artist='james', added_at=datetime.now(), processed=True))
-        # print(db.mark_processed("the url", True))
-        # print(db.con.cursor().execute("SELECT * FROM music_v2").fetchall())
-        # print(db.con.cursor().execute("SELECT * FROM music_v2").fetchall())
-        # print(db.con.cursor().execute("SELECT * FROM music_v2").fetchall())
-        new_videos = new_liked_videos(db)
-        print(new_videos)
-        print(new_videos)
-        print(new_videos)
-        print(new_videos)
+        for vid in new_liked_videos(db):
+            log.info("New video from playlist: %s", vid.title)
+            db.add_url(
+                vid.url,
+                title=vid.title,
+                artist=vid.artist,
+                added_at=vid.added_at,
+                processed=False,
+            )
+        for item in db.unprocessed_items():
+            log.info("Processing: %s", item)
+            try:
+                output_path = download_and_get_path(item.url, config["path"])
+                tag_file(
+                    output_path,
+                    {
+                        "title": item.title,
+                        "artist": item.artist,
+                        "url": item.url,
+                        "added_at": item.added_at,
+                    },
+                )
+                db.mark_processed(item.url, True)
+            except KeyboardInterrupt as e:
+                log.info("Received KeyboardInterrupt, exiting...")
+                break
+            except Exception as e:
+                log.error("Item failed to process", exc_info=e)
 
 
 if __name__ == "__main__":
