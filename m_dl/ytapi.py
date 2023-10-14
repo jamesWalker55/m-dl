@@ -14,7 +14,6 @@ class PlaylistItem:
     channel_id: str
 
     added_at: datetime
-    uploaded_at: datetime
 
     @classmethod
     def from_pyyoutube(cls, item: pyyoutube.PlaylistItem):
@@ -36,13 +35,7 @@ class PlaylistItem:
         assert added_at[-1] == "Z"
         added_at = datetime.fromisoformat(added_at[:-1])
 
-        uploaded_at = item.contentDetails.videoPublishedAt  # type: ignore
-        assert isinstance(uploaded_at, str)
-        assert len(uploaded_at) == 20
-        assert uploaded_at[-1] == "Z"
-        uploaded_at = datetime.fromisoformat(uploaded_at[:-1])
-
-        return cls(title, video_id, channel, channel_id, added_at, uploaded_at)
+        return cls(title, video_id, channel, channel_id, added_at)
 
     def url(self):
         return f"https://www.youtube.com/watch?v={self.video_id}"
