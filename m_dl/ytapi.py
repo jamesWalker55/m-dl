@@ -37,8 +37,17 @@ class PlaylistItem:
 
         return cls(title, video_id, channel, channel_id, added_at)
 
+    @property
     def url(self):
         return f"https://www.youtube.com/watch?v={self.video_id}"
+
+    @property
+    def source_id(self):
+        return self.video_id
+
+    @property
+    def artist(self):
+        return self.channel
 
 
 class YTApi:
