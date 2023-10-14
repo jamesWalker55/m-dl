@@ -101,7 +101,6 @@ class Database:
             UPDATE music_v2
             SET processed = ?
             WHERE url = ?
-            LIMIT 1
         """
         params = (1 if processed else 0, url)
         self.con.execute(sql, params)
