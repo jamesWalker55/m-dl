@@ -1,5 +1,14 @@
+from dataclasses import dataclass
 from datetime import datetime
 from sqlite3 import Connection
+
+
+@dataclass
+class DatabaseItem:
+    title: str
+    url: str
+    artist: str
+    added_at: datetime
 
 
 class Database:
@@ -104,3 +113,14 @@ class Database:
         """
         params = (1 if processed else 0, url)
         self.con.execute(sql, params)
+
+    def unprocessed_items(self):
+        sql = """
+            SELECT title, url, artist, added_at
+            FROM music_v2
+            WHERE processed = 0
+            ORDER BY added_at
+        """
+        for title, url, artist, added_at in self.con.cursor().execute(sql).fetchall():
+            added_at = datetime.fromisoformat(added_at)
+            yield DatabaseItem(title, url, artist, added_at)
