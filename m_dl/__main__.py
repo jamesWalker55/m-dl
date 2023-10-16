@@ -1,8 +1,14 @@
+from argparse import ArgumentParser
+from datetime import datetime
+from pathlib import Path
+import shutil
+
+from m_dl.ytdlpitem import YTDLPItem
 from .log import setup_logging, log
 
 setup_logging()
 
-from .config import config
+from .config import config, load_config
 from .db import Database
 from .ytapi import YTApi, PlaylistItem
 from .download import download_and_get_path
@@ -37,18 +43,64 @@ def new_liked_videos(db: Database):
     return new_videos
 
 
+def backup_database():
+    db_path: Path = Path(config["path"]) / config["filenames"]["database"]
+
+    backup_dir: Path = Path(config["path"]) / config["filenames"]["database_backup_dir"]
+    backup_name = datetime.now().strftime("backup_%Y-%m-%d %H_%M_%S.db")
+    backup_path = backup_dir / backup_name
+
+    log.info("Backing up database to: %s", backup_path)
+    shutil.copy2(db_path, backup_path)
+
+
+def parse_args():
+    parser = ArgumentParser("m-dl")
+
+    parser.add_argument("-u", "--url", dest="urls", action="append", default=[])
+    parser.add_argument("--skip-youtube", action="store_true")
+    parser.add_argument("--config", type=Path)
+    parser.add_argument("--allow-duplicate", action="store_true")
+
+    return parser.parse_args()
+
+
 def main():
-    path = R"D:\Soundtracks\Downloaded Playlist\database.sqlite"
-    with Database(path) as db:
-        for vid in new_liked_videos(db):
-            log.info("New video from playlist: %s", vid.title)
-            db.add_url(
-                vid.url,
-                title=vid.title,
-                artist=vid.artist,
-                added_at=vid.added_at,
-                processed=False,
-            )
+    args = parse_args()
+
+    load_config(args.config)
+
+    backup_database()
+
+    db_path = Path(config["path"]) / config["filenames"]["database"]
+
+    with Database(db_path) as db:
+        for url in args.urls:
+            log.info("Processing manual URL: %s", url)
+            item = YTDLPItem.from_url(url)
+            if not args.allow_duplicate and db.has_url(item.url):
+                log.info("Database already contains this URL, skipping it: %s", url)
+            else:
+                log.info("New video from manual: %s", item.title)
+                db.add_url(
+                    item.url,
+                    title=item.title,
+                    artist=item.artist,
+                    added_at=item.added_at,
+                    processed=False,
+                )
+
+        if not args.skip_youtube:
+            for vid in new_liked_videos(db):
+                log.info("New video from playlist: %s", vid.title)
+                db.add_url(
+                    vid.url,
+                    title=vid.title,
+                    artist=vid.artist,
+                    added_at=vid.added_at,
+                    processed=False,
+                )
+
         for item in db.unprocessed_items():
             log.info("Processing: %s", item)
             try:
