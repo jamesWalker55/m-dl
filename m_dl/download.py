@@ -1,6 +1,7 @@
 import os
 import time
 import tempfile
+import re
 from typing import TypedDict
 from yt_dlp import YoutubeDL
 from pathlib import Path
@@ -14,18 +15,18 @@ class Auth(TypedDict):
     password: str
 
 
-def auth_config() -> dict[str, Auth]:
-    auth = config.get("auth", {})
+def auth_patterns() -> dict[str, Auth]:
+    patterns = config.get("auth_patterns", {})
 
-    assert isinstance(auth, dict)
+    assert isinstance(patterns, dict)
 
-    for k, v in auth.items():
+    for k, v in patterns.items():
         assert isinstance(k, str)
         assert isinstance(v, dict)
         assert "username" in v and isinstance(v["username"], str)
         assert "password" in v and isinstance(v["password"], str)
 
-    return auth
+    return patterns
 
 
 class NicoVideoBusyException(Exception):
@@ -74,14 +75,14 @@ def download(url: str, folder_path):
     check_nico_quality(url, options)
 
     # add password if needed
-    for suburl, auth in auth_config().items():
-        if suburl.lower() not in url.lower():
+    for pattern, auth in auth_patterns().items():
+        if not re.search(pattern, url, re.IGNORECASE):
             continue
 
         log.info(
-            "Url '%s' matches auth site '%s', adding authentication options",
+            "Url '%s' matches auth pattern '%s', adding authentication options",
             url,
-            suburl,
+            pattern,
         )
         options["username"] = auth["username"]
         options["password"] = auth["password"]
