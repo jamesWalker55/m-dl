@@ -1,0 +1,19 @@
+# general config
+path: C:/Path To Your Music Folder
+filenames:
+  database: m-dl.db
+  database_backup_dir: .m-dl
+
+# user config
+playlist_id: LL
+
+# youtube api
+client_id: <client id>
+client_secret: <client secret>
+refresh_token: <refresh token, optional>
+
+# if a url matches the regex, use authentication to download
+auth_patterns:
+  '*.\.youtube\..*':
+    username: your username
+    password: your password
