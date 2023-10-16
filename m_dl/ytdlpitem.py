@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
-from yt_dlp import YoutubeDL
+
 import pytz
+from yt_dlp import YoutubeDL
 
 
 @dataclass

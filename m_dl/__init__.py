@@ -1,17 +1,16 @@
+import shutil
 from argparse import ArgumentParser
 from datetime import datetime
 from pathlib import Path
-import shutil
 
 from m_dl.ytdlpitem import YTDLPItem
-from .log import log, setup_logging
-
 
 from .config import config, load_config
 from .db import Database
-from .ytapi import YTApi, PlaylistItem
 from .download import download_and_get_path
+from .log import log, setup_logging
 from .tagger import tag_file
+from .ytapi import PlaylistItem, YTApi
 
 
 def new_liked_videos(db: Database):

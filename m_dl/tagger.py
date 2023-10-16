@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import TypedDict
+
 from mediafile import MediaFile
 
 

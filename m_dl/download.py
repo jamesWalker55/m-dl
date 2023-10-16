@@ -1,13 +1,14 @@
 import os
-import time
-import tempfile
 import re
-from typing import TypedDict
-from yt_dlp import YoutubeDL
+import tempfile
+import time
 from pathlib import Path
+from typing import TypedDict
 
-from .log import log
+from yt_dlp import YoutubeDL
+
 from .config import config
+from .log import log
 
 
 class Auth(TypedDict):
