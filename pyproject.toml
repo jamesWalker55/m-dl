@@ -13,10 +13,12 @@ mediafile = "^0.12.0"
 yt-dlp = "^2023.10.13"
 pytz = "^2023.3.post1"
 
-
 [tool.poetry.group.dev.dependencies]
 black = "^23.9.1"
 ipykernel = "^6.25.2"
+
+[tool.poetry.scripts]
+m-dl = 'm_dl:main'
 
 [build-system]
 requires = ["poetry-core"]
