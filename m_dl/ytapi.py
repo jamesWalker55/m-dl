@@ -19,19 +19,19 @@ class PlaylistItem:
     @classmethod
     def from_pyyoutube(cls, item: pyyoutube.PlaylistItem):
         title = item.snippet.title  # type: ignore
-        assert isinstance(title, str)
+        assert isinstance(title, str), f"title is not str: {item.to_dict()!r}"
 
         video_id = item.snippet.resourceId.videoId  # type: ignore
-        assert isinstance(video_id, str)
+        assert isinstance(video_id, str), f"video_id is not str: {item.to_dict()!r}"
 
         channel = item.snippet.videoOwnerChannelTitle  # type: ignore
-        assert isinstance(channel, str)
+        assert isinstance(channel, str), f"channel is not str: {item.to_dict()!r}"
 
         channel_id = item.snippet.videoOwnerChannelId  # type: ignore
-        assert isinstance(channel_id, str)
+        assert isinstance(channel_id, str), f"channel_id is not str: {item.to_dict()!r}"
 
         added_at = item.snippet.publishedAt  # type: ignore
-        assert isinstance(added_at, str)
+        assert isinstance(added_at, str), f"added_at is not str: {item.to_dict()!r}"
         assert len(added_at) == 20
         assert added_at[-1] == "Z"
         added_at = datetime.fromisoformat(added_at[:-1])
