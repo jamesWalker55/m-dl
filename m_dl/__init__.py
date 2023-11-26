@@ -1,4 +1,5 @@
 import shutil
+import traceback
 from argparse import ArgumentParser
 from datetime import datetime
 from pathlib import Path
@@ -10,7 +11,7 @@ from .db import Database
 from .download import download_and_get_path
 from .log import log, setup_logging
 from .tagger import tag_file
-from .ytapi import PlaylistItem, YTApi
+from .ytapi import PlaylistItem, VideoInaccessibleError, YTApi
 
 
 def new_liked_videos(db: Database):
@@ -29,6 +30,11 @@ def new_liked_videos(db: Database):
     new_videos: list[PlaylistItem] = []
 
     for item in api.iter_playlist_items(playlist_id):
+        if isinstance(item, VideoInaccessibleError):
+            print("ERROR: FAILED TO ACCESS VIDEO")
+            print("".join(traceback.format_exception(item)))
+            continue
+
         if db.has_url(item.url):
             has_url_count += 1
         else:

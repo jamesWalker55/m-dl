@@ -1,9 +1,22 @@
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Literal
 
 import pyyoutube
 
 from .log import log
+
+
+class VideoInaccessibleError(Exception):
+    def __init__(self, type: Literal["private"], video_id) -> None:
+        self.type = type
+
+        if type == "private":
+            msg = f"Video is private: https://www.youtube.com/watch?v={video_id}"
+        else:
+            raise ValueError(f"Invalid error type: {type!r}")
+
+        super().__init__(msg)
 
 
 @dataclass
@@ -18,6 +31,12 @@ class PlaylistItem:
 
     @classmethod
     def from_pyyoutube(cls, item: pyyoutube.PlaylistItem):
+        if item.snippet is not None and item.snippet.title == "Private video":
+            raise VideoInaccessibleError(
+                "private",
+                item.snippet.resourceId.videoId if item.snippet.resourceId else None,
+            )
+
         title = item.snippet.title  # type: ignore
         assert isinstance(title, str), f"title is not str: {item.to_dict()!r}"
 
@@ -168,7 +187,10 @@ class YTApi:
             log.debug("Fetched %d items", len(res.items))
 
             for item in res.items:
-                yield PlaylistItem.from_pyyoutube(item)
+                try:
+                    yield PlaylistItem.from_pyyoutube(item)
+                except VideoInaccessibleError as e:
+                    yield e
 
             if res.nextPageToken is None:
                 break
