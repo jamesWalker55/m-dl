@@ -1,7 +1,7 @@
 import shutil
 import traceback
 from argparse import ArgumentParser
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from m_dl.ytdlpitem import YTDLPItem
@@ -65,6 +65,12 @@ def parse_args():
     parser.add_argument("--skip-youtube", action="store_true")
     parser.add_argument("--config", type=Path)
     parser.add_argument("--allow-duplicate", action="store_true")
+    parser.add_argument(
+        "--tag",
+        nargs=4,
+        help="tag a file with some settings: title, artist, url",
+        metavar=("PATH", "TITLE", "ARTIST", "URL"),
+    )
 
     return parser.parse_args()
 
@@ -75,6 +81,33 @@ def main():
     args = parse_args()
 
     load_config(args.config)
+
+    if args.tag is not None:
+        path, title, artist, url = args.tag
+        path = Path(path)
+        # current time in UTC
+        added_at = datetime.now(timezone.utc)
+
+        tags = {
+            "title": title,
+            "artist": artist,
+            "url": url,
+            "added_at": added_at,
+        }
+
+        log.info(f"Tagging {path.name!r} with the following tags:")
+        log.info(tags)
+
+        tag_file(
+            path,
+            {
+                "title": title,
+                "artist": artist,
+                "url": url,
+                "added_at": added_at,
+            },
+        )
+        return
 
     backup_database()
 
