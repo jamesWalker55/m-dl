@@ -8,11 +8,13 @@ from .log import log
 
 
 class VideoInaccessibleError(Exception):
-    def __init__(self, type: Literal["private"], video_id) -> None:
+    def __init__(self, type: Literal["private", "deleted"], video_id) -> None:
         self.type = type
 
         if type == "private":
             msg = f"Video is private: https://www.youtube.com/watch?v={video_id}"
+        elif type == "deleted":
+            msg = f"Video is deleted: https://www.youtube.com/watch?v={video_id}"
         else:
             raise ValueError(f"Invalid error type: {type!r}")
 
@@ -40,10 +42,21 @@ class PlaylistItem:
         title = item.snippet.title  # type: ignore
         assert isinstance(title, str), f"title is not str: {item.to_dict()!r}"
 
+        description = item.snippet.description  # type: ignore
+        assert isinstance(
+            description, str
+        ), f"description is not str: {item.to_dict()!r}"
+
         video_id = item.snippet.resourceId.videoId  # type: ignore
         assert isinstance(video_id, str), f"video_id is not str: {item.to_dict()!r}"
 
         channel = item.snippet.videoOwnerChannelTitle  # type: ignore
+        if (
+            channel is None
+            and title == "Deleted video"
+            and description == "This video is unavailable."
+        ):
+            raise VideoInaccessibleError("deleted", video_id)
         assert isinstance(channel, str), f"channel is not str: {item.to_dict()!r}"
 
         channel_id = item.snippet.videoOwnerChannelId  # type: ignore
