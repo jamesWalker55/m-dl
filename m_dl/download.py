@@ -105,9 +105,37 @@ def download_and_get_path(url: str, folder_path):
         # there should only be 1 file in this folder
         files = os.listdir(tempdir)
         if len(files) != 1:
-            raise FileNotFoundError(
+            print("======================================================")
+            print("======================================================")
+            print(
                 f"There should be exactly 1 file after downloading, but found {len(files)} files"
             )
+            print("Please choose which file you want to keep!")
+            print("======================================================")
+            print("======================================================")
+            for i, f in enumerate(files):
+                print(f"{i + 1}. {f}")
+
+            while True:
+                idx = input("  (input a number, or 'x' to skip) > ")
+                if idx.strip() == "x":
+                    raise FileNotFoundError(
+                        f"There should be exactly 1 file after downloading, but found {len(files)} files"
+                    )
+
+                try:
+                    idx = int(idx) - 1
+                except ValueError:
+                    print("Invalid number")
+                    continue
+
+                if not 0 <= idx < len(files):
+                    print(f"Not in range of 1 - {len(files)}")
+                    continue
+
+                break
+
+            files = [files[idx]]
 
         temp_path = Path(tempdir) / files[0]
         output_path = Path(folder_path) / temp_path.name
