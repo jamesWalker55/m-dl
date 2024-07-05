@@ -6,6 +6,7 @@
 #   features: []
 #   all-features: false
 #   with-sources: false
+#   generate-hashes: false
 
 -e file:.
 brotli==1.1.0
@@ -62,4 +63,3 @@ websockets==12.0
     # via yt-dlp
 yt-dlp==2024.5.17.232726.dev0
     # via m-dl
-    # via yt-dlp
