@@ -30,7 +30,7 @@ class YTDLPItem:
         url = info["webpage_url"]
         assert isinstance(url, str)
 
-        artist = info["uploader"]
+        artist = info.get("uploader", "Unknown")
         assert isinstance(artist, str)
 
         added_at = datetime.now(pytz.UTC)
