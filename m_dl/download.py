@@ -60,6 +60,7 @@ def download(url: str, folder_path):
         "format": "bestaudio/best",
         "updatetime": False,
         "outtmpl": str(Path(folder_path) / "%(title)s %(id)s.%(ext)s"),
+        "windowsfilenames": True,
         "postprocessors": [
             {  # --extract-audio
                 "key": "FFmpegExtractAudio",
