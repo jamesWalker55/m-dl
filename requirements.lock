@@ -60,7 +60,7 @@ typing-inspect==0.9.0
 urllib3==2.2.2
     # via requests
     # via yt-dlp
-websockets==12.0
+websockets==13.1
     # via yt-dlp
-yt-dlp==2024.7.30.232707.dev0
+yt-dlp==2024.10.16.232911.dev0
     # via m-dl
