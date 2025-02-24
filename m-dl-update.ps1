@@ -1,6 +1,6 @@
 Push-Location
 Set-Location $PSScriptRoot
 
-uv run m-dl $args
+uv lock --upgrade
 
 Pop-Location

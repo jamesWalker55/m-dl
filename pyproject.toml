@@ -6,13 +6,14 @@ authors = [
     { name = "James Walker", email = "james.chunho@gmail.com" }
 ]
 readme = "README.md"
+requires-python = ">=3.13"
 
 dependencies = [
-    "pyyaml~=6.0.1",
+    "pyyaml~=6.0.2",
     "python-youtube~=0.9.2",
-    "mediafile~=0.12.0",
-    "yt-dlp[default]>=2024.5.17.232726.dev0",
-    "pytz~=2023.3.post1",
+    "mediafile~=0.13.0",
+    "yt-dlp[default]>=2025.2.23.232748.dev0",
+    "pytz~=2025.1",
 ]
 
 [project.scripts]
@@ -22,7 +23,7 @@ m-dl = 'm_dl:main'
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.rye]
+[tool.uv]
 managed = true
 dev-dependencies = []
 
