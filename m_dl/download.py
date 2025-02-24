@@ -44,14 +44,15 @@ def check_nico_quality(url: str, options):
 
     any_audio_unavailable = any(
         not audio["isAvailable"]
-        for audio in info["_api_data"]["media"]["delivery"]["movie"]["audios"]  # type: ignore
+        for audio in info["_api_data"]["media"]["domand"]["audios"]  # type: ignore
     )
-    any_video_unavailable = any(
-        not video["isAvailable"]
-        for video in info["_api_data"]["media"]["delivery"]["movie"]["videos"]  # type: ignore
-    )
+    # any_video_unavailable = any(
+    #     not video["isAvailable"]
+    #     for video in info["_api_data"]["media"]["domand"]["videos"]  # type: ignore
+    # )
 
-    if any_audio_unavailable or any_video_unavailable:
+    # if any_audio_unavailable or any_video_unavailable:
+    if any_audio_unavailable:
         raise NicoVideoBusyException()
 
 
