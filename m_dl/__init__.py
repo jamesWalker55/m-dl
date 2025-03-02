@@ -58,6 +58,19 @@ def backup_database():
     shutil.copy2(db_path, backup_path)
 
 
+def tag_tempo():
+    import subprocess
+
+    cmd = [
+        R"uv",
+        R"--directory",
+        R"D:\Programming\bpm-tagger",
+        R"run",
+        R"D:\Programming\bpm-tagger\main.py",
+    ]
+    subprocess.run(cmd)
+
+
 def parse_args():
     parser = ArgumentParser("m-dl")
 
@@ -159,3 +172,7 @@ def main():
                 break
             except Exception as e:
                 log.error("Item failed to process", exc_info=e)
+
+    # tag BPM info for foobar2000
+    log.info("tagging BPM info for untagged files")
+    tag_tempo()
